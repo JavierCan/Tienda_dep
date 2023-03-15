@@ -3,7 +3,8 @@ USE tienda_dep;
 --1. Mostrar el número de ventas de cada producto, ordenado de más a menos ventas.
 SELECT id_producto, COUNT(id_producto) AS ventas FROM ventas GROUP BY id_producto ORDER BY ventas DESC;
 
---2. Obtener un informe completo de ventas, indicando el nombre del cajeroque realiz ó la venta, nombre y precios de los productos vendidos, y piso en el que se encuentra la máquina registradora donde se realizóla venta.
+--2. Obtener un informe completo de ventas, indicando el nombre del cajeroque realiz ó la venta, 
+--nombre y precios de los productos vendidos, y piso en el que se encuentra la máquina registradora donde se realizóla venta.
 SELECT c.nombre, c.apellido, p.nombre, p.precio, m.piso 
 FROM ventas v INNER JOIN cajeros c ON v.id_cajero = c.id_cajero 
 INNER JOIN productos p ON v.id_producto = p.id_producto 
@@ -20,3 +21,12 @@ SELECT c.id_cajero, c.nombre, c.apellido, SUM(p.precio * v.cantidad) AS ventas_t
 FROM ventas v INNER JOIN cajeros c ON v.id_cajero = c.id_cajero
 INNER JOIN productos p ON v.id_producto = p.id_producto
 GROUP BY c.id_cajero;
+
+--5. Obtener el código y nombre de aquellos cajeros que hayan realizado ventas en pisos cuyas ventas totales sean inferiores a los $###.
+SELECT c.id_cajero, c.nombre, c.apellido, SUM(p.precio * v.cantidad) AS ventas_totales
+FROM ventas v INNER JOIN cajeros c ON v.id_cajero = c.id_cajero
+INNER JOIN productos p ON v.id_producto = p.id_producto
+INNER JOIN maquina_registradora m ON v.id_maquina = m.id_maquina
+GROUP BY c.id_cajero
+HAVING ventas_totales < 1000;
+
